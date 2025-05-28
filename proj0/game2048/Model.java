@@ -110,15 +110,17 @@ public class Model extends Observable {
     private boolean tiltColumn(int col) {
         boolean changed = false;
         int size = board.size();
-        boolean[] merged = new boolean[size];
+        boolean[] merged = new boolean[size];//布尔数组，辅助判断是否发生合并，唯一难点
         for (int row = size - 2; row >= 0; row--) {
             Tile t = board.tile(col, row);
-            if (t == null) continue;
+            if (t == null) continue;//空的跳过此次循环
             int targetRow = row;
             for (int r = row + 1; r < size; r++) {
+                //可以向上滑到最远的位置
                 Tile above = board.tile(col, r);
                 if (above == null) {
                     targetRow = r;
+                    //发生合并的情况
                 } else if (above.value() == t.value() && !merged[r]) {
                     board.move(col, r, t);
                     score += t.value() * 2;
@@ -130,6 +132,7 @@ public class Model extends Observable {
                     break;
                 }
             }
+            //没有合并，满足向上推条件的
             if (targetRow != -1 && targetRow != row) {
                 board.move(col, targetRow, t);
                 changed = true;
